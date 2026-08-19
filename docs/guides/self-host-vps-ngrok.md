@@ -207,73 +207,100 @@ buzz channels add-member \
 
 ### 7.4 Write the agent system prompt
 
-Create `/tmp/hn-curator-prompt.txt`:
+Create `/tmp/hacky-prompt.txt`:
 
 ```text
-You are HN Curator, a Buzz agent that fetches and summarizes top HackerNews stories.
+You are hacky, a Buzz agent that fetches the latest HackerNews stories.
 
-When the user asks for HackerNews stories:
+When someone asks for news:
 1. Use the `web_fetch` tool to GET `https://hacker-news.firebaseio.com/v0/topstories.json`.
-2. Parse the JSON array of story IDs. Take the first N they asked for (default 5, max 10).
+2. Parse the JSON array of story IDs and take only the first 2.
 3. For each ID, call `web_fetch` to GET `https://hacker-news.firebaseio.com/v0/item/{id}.json`.
 4. Extract `title`, `url`, `score`, and `by` from each item.
-5. Post a concise numbered summary back to the channel using the `shell` tool to run:
+5. Use the `shell` tool to run `sleep 10` so the user can see the agent working / loading state.
+6. Post a concise one-line summary per story back to the channel using the `shell` tool:
    buzz messages send --channel <channel_id> --content "your summary here"
 
-If the request does not specify N, fetch 5 stories. If any API call fails, report the error.
+Keep the summary very short. If the API call fails, report the error.
 ```
+
+Replace `<channel_id>` with the UUID created in the previous step.
 
 ### 7.5 Start the ACP harness
 
+A helper script is provided at `/root/buzz/run-hacky.sh`. It reads the generated keys and DeepSeek config from the repo-root `.env` and starts `buzz-acp`.
+
 ```bash
 cd /root/buzz
-set -a
-source .env
-set +a
-export PATH="$PWD/target/release:$PATH"
-
-nohup env \
-  BUZZ_AGENT_PROVIDER=openai \
-  OPENAI_COMPAT_API_KEY="$DEEPSEEK_API_KEY" \
-  OPENAI_COMPAT_BASE_URL=https://api.deepseek.com/v1 \
-  OPENAI_COMPAT_MODEL=deepseek-chat \
-  OPENAI_COMPAT_API=chat \
-  BUZZ_ACP_AGENT_OWNER=<owner-pubkey> \
-  PATH="$PATH" \
-  buzz-acp \
-    --relay-url "wss://<host>.ngrok-free.app" \
-    --private-key "$AGENT_PRIVATE_KEY" \
-    --agent-command buzz-agent \
-    --agent-args acp \
-    --mcp-command buzz-dev-mcp \
-    --system-prompt-file /tmp/hn-curator-prompt.txt \
-    --channels <channel_id> \
-    --subscribe mentions \
-    --respond-to owner-only \
-  > /tmp/buzz-acp.log 2>&1 &
+chmod +x run-hacky.sh
+nohup ./run-hacky.sh > /tmp/hacky-start.log 2>&1 &
 disown
 ```
 
 Wait a few seconds, then confirm it discovered the channel:
 
 ```bash
-tail -n 20 /tmp/buzz-acp.log
+tail -n 20 /tmp/hacky-acp.log
 ```
+
+You should see `discovered 1 channel(s)` and `subscribed to channel <channel_id>`.
 
 ### 7.6 Mention the agent
 
 ```bash
 buzz messages send \
   --channel <channel_id> \
-  --content "@HN Curator what are the top 5 HackerNews stories right now?" \
+  --content "@hacky news" \
   --mention <AGENT_PUBKEY>
 ```
 
-Within ~30 seconds the agent should fetch the HN API and post a summary back to the channel:
+The agent will fetch 2 stories, wait 10 seconds, and post the summaries. Watch the loading indicator in the channel, then check the result:
 
 ```bash
 buzz --format compact messages get --channel <channel_id> --limit 10
 ```
+
+### 7.7 Register `hacky` in the desktop app
+
+ACP agents respond to mentions but do not automatically appear in the desktop **Agents** page. To show `hacky` there, send a desktop agent draft:
+
+```bash
+export BUZZ_PRIVATE_KEY=$AGENT_PRIVATE_KEY
+export BUZZ_AUTH_TAG=$(/opt/buzz-venv/bin/python - <<'PY'
+import hashlib, json, os
+from coincurve import PrivateKey
+
+owner_hex = os.environ['RELAY_OWNER_PUBKEY']  # owner pubkey hex
+agent_priv = os.environ['AGENT_PRIVATE_KEY']
+agent_pub = PrivateKey.from_hex(agent_priv).public_key.format(compressed=False)[1:33].hex()
+preimage = f"nostr:agent-auth:{agent_pub}:"
+digest = hashlib.sha256(preimage.encode()).digest()
+sig = PrivateKey.from_hex(os.environ['BUZZ_RELAY_PRIVATE_KEY']).sign_schnorr(digest, None).hex()
+print(json.dumps(["auth", owner_hex, "", sig]))
+PY
+)
+
+buzz agents draft-create \
+  --channel <channel_id> \
+  --display-name hacky \
+  --system-prompt "Fetch the latest 2 HackerNews stories and summarize them briefly when asked."
+```
+
+> On a closed-membership relay, the agent-owner mapping is not auto-materialized. If `draft-create` fails with `observer frame is not authorized for this agent owner`, set it directly in Postgres:
+>
+> ```bash
+> cd deploy/compose
+> docker compose exec -T postgres psql -U buzz -d buzz -c "
+> UPDATE users
+> SET agent_owner_pubkey = decode('<owner-pubkey-hex>','hex')
+> WHERE community_id = (SELECT id FROM communities WHERE host = '<host>.ngrok-free.app')::uuid
+>   AND pubkey = decode('<agent-pubkey-hex>','hex');
+> "
+> ```
+>
+> Then retry `buzz agents draft-create`.
+
+After the draft is sent, open Buzz Desktop → **Agents**, review the `hacky` draft, and save it. `hacky` will then appear in the Agents page.
 
 ## 8. Operations
 
@@ -431,26 +458,17 @@ Share the printed `https://<host>.ngrok-free.app/invite/<code>` link with peers.
    ```
    Then restart/refresh the desktop app.
 
-## Where is my ACP agent?
+## Where is my ACP agent in the desktop app?
 
-The HN Curator agent built in this guide is an **ACP agent** — it runs as a server-side process (`buzz-acp` + `buzz-agent` + `buzz-dev-mcp`). It responds to `@HN Curator` mentions in channels, but it **does not appear in the desktop app's Agents page** unless you also register it as a desktop-visible persona or agent draft.
+The `hacky` agent built above is an **ACP agent**: it runs as a server-side process and responds to `@hacky` mentions in channels. It does **not** automatically appear in the desktop **Agents** page.
 
-The desktop Agents page lists:
+The desktop Agents page shows:
 
 - Built-in default agents (`Fizz`, `Honey`, `Pollen`, `Welcome Team`).
-- Agents created through the desktop UI.
+- Agents created or saved through the desktop UI.
 - Persona packs installed in the desktop app data directory.
 
-To make the HN Curator appear there, create a draft:
-
-```bash
-buzz agents draft-create \
-  --channel <channel-id> \
-  --display-name "HN Curator" \
-  --system-prompt "Fetch and summarize top HackerNews stories when asked."
-```
-
-The owner reviews and saves the draft in the desktop app.
+To make `hacky` appear in the desktop app, follow step **7.7** and save the draft in Buzz Desktop → **Agents**.
 
 ## Troubleshooting
 
