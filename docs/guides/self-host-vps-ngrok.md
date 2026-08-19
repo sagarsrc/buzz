@@ -415,6 +415,43 @@ PY
 
 Share the printed `https://<host>.ngrok-free.app/invite/<code>` link with peers. When they open it and claim, they become relay members and can connect from the desktop or web client.
 
+## Connecting the desktop app
+
+1. Install Buzz desktop from the link on the invite page or from GitHub releases.
+2. Open the app and choose **"Use an existing key"**.
+3. Paste your owner **nsec** (from `/root/buzz/.env` as `OWNER_NSEC`).
+4. When asked for the community URL, paste the relay WebSocket URL:
+   ```
+   wss://<host>.ngrok-free.app
+   ```
+5. The app connects. If it says `Load failed` / `not a relay member`, the desktop created a **new identity** instead of using the owner key. Find the new pubkey in the error or on the onboarding screen (e.g., `npub1...`) and add it from the server:
+   ```bash
+   cd deploy/compose
+   ./run.sh add-member <desktop-pubkey-hex> --role member
+   ```
+   Then restart/refresh the desktop app.
+
+## Where is my ACP agent?
+
+The HN Curator agent built in this guide is an **ACP agent** — it runs as a server-side process (`buzz-acp` + `buzz-agent` + `buzz-dev-mcp`). It responds to `@HN Curator` mentions in channels, but it **does not appear in the desktop app's Agents page** unless you also register it as a desktop-visible persona or agent draft.
+
+The desktop Agents page lists:
+
+- Built-in default agents (`Fizz`, `Honey`, `Pollen`, `Welcome Team`).
+- Agents created through the desktop UI.
+- Persona packs installed in the desktop app data directory.
+
+To make the HN Curator appear there, create a draft:
+
+```bash
+buzz agents draft-create \
+  --channel <channel-id> \
+  --display-name "HN Curator" \
+  --system-prompt "Fetch and summarize top HackerNews stories when asked."
+```
+
+The owner reviews and saves the draft in the desktop app.
+
 ## Troubleshooting
 
 **Relay container fails with "invalid port number"**
