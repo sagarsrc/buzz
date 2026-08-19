@@ -338,6 +338,83 @@ NGROK_STATIC_DOMAIN=<your-domain>.ngrok-free.app
 - **`:main` image tag is mutable.** Pin to a SHA or semver tag for anything beyond a demo.
 - **Back up `.env` before upgrades.** It contains irreplaceable relay keys and database credentials.
 
+## Sharing with peers
+
+By default the relay root `/` returns the NIP-11 JSON document and the bundled web UI is not exposed. To let peers open Buzz in a browser and join the relay, do two things:
+
+### 1. Enable the web UI
+
+Add to `deploy/compose/.env`:
+
+```bash
+BUZZ_SERVE_GIT_WEB_GUI=true
+```
+
+Restart the relay:
+
+```bash
+cd deploy/compose
+./run.sh restart
+```
+
+Now `https://<host>.ngrok-free.app/` serves the web app HTML.
+
+### 2. Mint an invite
+
+New pubkeys are rejected with `restricted: not a relay member` until they are added to relay membership. The cleanest way to onboard peers is an invite claim link.
+
+`buzz-cli` does not have an invite subcommand, so mint one via the authenticated HTTP API. The endpoint requires a NIP-98 (kind:27235) signed auth event from an owner/admin key.
+
+Install `pynostr` in the uv venv:
+
+```bash
+uv pip install --python /opt/buzz-venv/bin/python pynostr
+```
+
+Run:
+
+```bash
+/opt/buzz-venv/bin/python - <<'PY'
+import base64, hashlib, json, os, time
+import requests
+from pynostr.key import PrivateKey
+from pynostr.event import Event
+
+owner_hex = os.environ['BUZZ_PRIVATE_KEY']  # owner 64-hex private key
+host = '<host>.ngrok-free.app'
+path = '/api/invites'
+url = f'https://{host}{path}'
+
+body = json.dumps({'ttl_secs': 259200, 'max_uses': 10})  # 72h, 10 uses
+body_bytes = body.encode()
+payload_hash = hashlib.sha256(body_bytes).hexdigest()
+
+event = Event(
+    kind=27235,
+    content='',
+    pubkey=PrivateKey.from_hex(owner_hex).public_key.hex(),
+    created_at=int(time.time()),
+    tags=[['u', url], ['method', 'POST'], ['payload', payload_hash]],
+)
+event.sign(owner_hex)
+
+auth = 'Nostr ' + base64.b64encode(json.dumps(event.to_dict()).encode()).decode()
+
+r = requests.post(
+    url,
+    data=body_bytes,
+    headers={
+        'Host': host,
+        'Content-Type': 'application/json',
+        'Authorization': auth,
+    },
+)
+print(r.json()['url'])
+PY
+```
+
+Share the printed `https://<host>.ngrok-free.app/invite/<code>` link with peers. When they open it and claim, they become relay members and can connect from the desktop or web client.
+
 ## Troubleshooting
 
 **Relay container fails with "invalid port number"**
