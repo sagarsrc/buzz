@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buzz Self-Hosted Offering — Technical One-Pager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --color-graphite: #202020;
+        --color-canvas-white: #ffffff;
+        --color-ash: #efefef;
+        --color-fog: #f5f5f5;
+        --color-ivory: #ebe6dd;
+        --color-steel: #4d4d4d;
+        --color-slate: #828282;
+        --color-mist: #e8e8e8;
+        --color-ember-orange: #ff682c;
+        --color-brass: #816729;
+
+        --font-polysans: 'Space Grotesk', 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+        --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+        --page-max-width: 1200px;
+        --section-gap: 80px;
+        --element-gap: 20px;
+        --card-padding: 40px;
+        --radius-buttons: 0px;
+        --radius-nav-pills: 200px;
+        --radius-asymmetric-card: 6px 0px 0px;
+        --radius-data-card: 20px;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--color-canvas-white);
+        color: var(--color-graphite);
+        font-family: var(--font-inter);
+        line-height: 1.45;
+      }
+
+      a {
+        color: inherit;
+        text-decoration-color: var(--color-ember-orange);
+        text-underline-offset: 3px;
+      }
+
+      .page {
+        width: min(100%, var(--page-max-width));
+        margin: 0 auto;
+        padding: 24px 24px 100px;
+      }
+
+      .header {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        align-items: center;
+        gap: 20px;
+        padding: 18px 0 28px;
+      }
+
+      .brand,
+      .pill-link,
+      .btn,
+      h1,
+      h2,
+      h3,
+      .eyebrow,
+      .stat-value,
+      .matrix th,
+      .layer-title {
+        font-family: var(--font-polysans);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .brand {
+        font-size: 20px;
+      }
+
+      .nav-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 20px;
+        background: var(--color-ash);
+        border-radius: var(--radius-nav-pills);
+        padding: 10px 18px;
+        justify-self: center;
+      }
+
+      .pill-link {
+        font-size: 15px;
+        text-decoration: none;
+      }
+
+      .lang {
+        color: var(--color-slate);
+        font-family: var(--font-polysans);
+        letter-spacing: -0.02em;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 32px;
+        align-items: center;
+        min-height: 560px;
+        padding: 28px 0 20px;
+      }
+
+      .eyebrow {
+        font-size: 13px;
+        color: var(--color-brass);
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: clamp(44px, 7vw, 66px);
+        line-height: 0.94;
+        margin: 0 0 20px;
+      }
+
+      .hero p.lead {
+        font-size: 18px;
+        line-height: 1.28;
+        color: var(--color-steel);
+        max-width: 60ch;
+        margin: 0 0 28px;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        border: 1px solid var(--color-graphite);
+        border-radius: var(--radius-buttons);
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .btn.primary {
+        background: var(--color-graphite);
+        color: var(--color-canvas-white);
+      }
+
+      .btn.secondary {
+        background: transparent;
+        color: var(--color-graphite);
+      }
+
+      .meta-inline {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        color: var(--color-slate);
+        font-size: 14px;
+      }
+
+      .meta-inline span::before {
+        content: '—';
+        color: var(--color-ember-orange);
+        margin-right: 8px;
+      }
+
+      .hero-stack {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          'verdict verdict'
+          'runtime risk';
+        gap: 18px;
+        padding: 18px;
+        background: linear-gradient(180deg, var(--color-fog), var(--color-ash));
+        border-radius: 32px;
+        border: 1px solid var(--color-mist);
+        min-height: auto;
+      }
+
+      .data-card {
+        position: relative;
+        background: var(--color-canvas-white);
+        border-radius: var(--radius-data-card);
+        padding: 26px;
+        border: 1px solid var(--color-mist);
+        min-width: 0;
+      }
+
+      .data-card h3 {
+        font-size: 18px;
+        margin: 0 0 16px;
+      }
+
+      .card-a { grid-area: verdict; }
+      .card-b { grid-area: runtime; align-self: stretch; }
+      .card-c { grid-area: risk; align-self: stretch; }
+      .card-c .stat-note {
+        max-width: none;
+        min-width: 0;
+      }
+
+      .hero-verdict-row {
+        display: grid;
+        grid-template-columns: 84px 1fr;
+        gap: 18px;
+        align-items: end;
+      }
+
+      .req-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .req-chips span {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--color-fog);
+        border: 1px solid var(--color-mist);
+        font-size: 13px;
+        color: var(--color-steel);
+        white-space: nowrap;
+      }
+
+      .risk-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+
+      .risk-row .ring {
+        margin: 6px 0 2px;
+      }
+
+      .mini-label {
+        font-size: 12px;
+        color: var(--color-slate);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 36px;
+        line-height: 1;
+        margin-bottom: 10px;
+      }
+
+      .stat-note {
+        font-size: 14px;
+        color: var(--color-steel);
+        line-height: 1.38;
+      }
+
+      .spark {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        align-items: end;
+        gap: 8px;
+        height: 100px;
+        margin-top: 16px;
+      }
+
+      .spark span {
+        background: linear-gradient(180deg, rgba(255, 104, 44, 0.16), rgba(255, 104, 44, 0.9));
+        border-radius: 10px 10px 0 0;
+      }
+
+      .ring {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        margin: 10px 0 14px;
+        background: conic-gradient(var(--color-ember-orange) 0 68%, var(--color-brass) 68% 82%, var(--color-ash) 82% 100%);
+        display: grid;
+        place-items: center;
+      }
+
+      .ring::after {
+        content: '68%';
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        background: var(--color-canvas-white);
+        display: grid;
+        place-items: center;
+        font-family: var(--font-polysans);
+        letter-spacing: -0.02em;
+      }
+
+
+      section {
+        margin-top: var(--section-gap);
+      }
+
+      .band {
+        background: var(--color-ash);
+        margin: var(--section-gap) calc(50% - 50vw) 0;
+        padding: 80px 0;
+      }
+
+      .band .page,
+      .page-inner {
+        width: min(100%, var(--page-max-width));
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      h2 {
+        font-size: 40px;
+        line-height: 1.1;
+        margin: 0 0 14px;
+      }
+
+      .section-intro {
+        color: var(--color-steel);
+        font-size: 17px;
+        max-width: 72ch;
+        margin-bottom: 28px;
+      }
+
+      .agent-term {
+        color: var(--color-ember-orange);
+        font-family: var(--font-polysans);
+        letter-spacing: -0.02em;
+      }
+
+      .layer-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .layer-card {
+        background: var(--color-canvas-white);
+        padding: 30px;
+        border-radius: var(--radius-asymmetric-card);
+        min-height: 320px;
+      }
+
+      .layer-title {
+        font-size: 26px;
+        margin-bottom: 12px;
+      }
+
+      .layer-sub {
+        color: var(--color-brass);
+        font-size: 13px;
+        margin-bottom: 18px;
+      }
+
+      ul.clean {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      ul.clean li {
+        position: relative;
+        padding-left: 16px;
+        color: var(--color-steel);
+      }
+
+      ul.clean li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7em;
+        width: 6px;
+        height: 6px;
+        background: var(--color-ember-orange);
+        border-radius: 50%;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        gap: 20px;
+      }
+
+      .stack-card,
+      .matrix-wrap,
+      .verdict-card {
+        background: var(--color-canvas-white);
+        border-radius: var(--radius-data-card);
+        border: 1px solid var(--color-mist);
+        padding: 28px;
+      }
+
+      .verdict-card {
+        background: var(--color-ivory);
+        border-radius: var(--radius-asymmetric-card);
+        border: none;
+      }
+
+      .verdict-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      .verdict-box {
+        padding: 24px;
+        background: var(--color-canvas-white);
+        border-radius: var(--radius-data-card);
+      }
+
+      .verdict-big {
+        font-family: var(--font-polysans);
+        letter-spacing: -0.02em;
+        font-size: 30px;
+        line-height: 1.06;
+        margin: 0 0 14px;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .chip {
+        border: 1px solid var(--color-mist);
+        border-radius: 20px;
+        padding: 8px 12px;
+        font-size: 13px;
+        background: rgba(255,255,255,0.7);
+      }
+
+      .req-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .req-list h3,
+      .stack-card h3,
+      .matrix-wrap h3,
+      .verdict-card h3 {
+        font-size: 22px;
+        margin: 0 0 16px;
+      }
+
+      .mono-box {
+        background: var(--color-fog);
+        border: 1px solid var(--color-mist);
+        padding: 18px;
+        border-radius: 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.55;
+        overflow-x: auto;
+      }
+
+      .warn-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .warn {
+        background: var(--color-canvas-white);
+        border: 1px solid var(--color-mist);
+        border-radius: var(--radius-data-card);
+        padding: 24px;
+      }
+
+      .warn h3 {
+        margin: 0 0 12px;
+        font-size: 22px;
+      }
+
+      .matrix {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .matrix th,
+      .matrix td {
+        text-align: left;
+        vertical-align: top;
+        padding: 14px 12px;
+        border-top: 1px solid var(--color-mist);
+      }
+
+      .matrix th {
+        font-size: 15px;
+      }
+
+      .good { color: var(--color-brass); }
+      .bad { color: var(--color-ember-orange); }
+      .muted { color: var(--color-slate); }
+
+      footer {
+        margin-top: 80px;
+        padding-top: 20px;
+        border-top: 1px solid var(--color-mist);
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        color: var(--color-slate);
+        font-size: 13px;
+      }
+
+      @media (max-width: 980px) {
+        .header,
+        .hero,
+        .layer-grid,
+        .split,
+        .req-grid,
+        .warn-grid,
+        .verdict-grid {
+          grid-template-columns: 1fr;
+        }
+        .nav-pill { justify-self: start; }
+        .hero-stack {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            'verdict'
+            'runtime'
+            'risk';
+        }
+        .hero-verdict-row { grid-template-columns: 1fr; }
+        footer { flex-direction: column; }
+      }
+
+      @media (max-width: 640px) {
+        .page { padding: 18px 18px 80px; }
+        .band .page, .page-inner { padding: 0 18px; }
+        h2 { font-size: 32px; }
+        .layer-card,
+        .stack-card,
+        .matrix-wrap,
+        .warn,
+        .verdict-card,
+        .verdict-box,
+        .data-card { padding: 22px; }
+        .req-chips span { white-space: normal; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="brand">Buzz / self-hosted verdict</div>
+        <nav class="nav-pill">
+          <a class="pill-link" href="#verdict">TL;DR</a>
+          <a class="pill-link" href="#layers">L0–L2</a>
+          <a class="pill-link" href="#requirements">Requirements</a>
+          <a class="pill-link" href="#customization">Customization</a>
+          <a class="pill-link" href="#matrix">Decision matrix</a>
+        </nav>
+        <div class="lang">&nbsp;</div>
+      </header>
+
+      <section class="hero" id="verdict">
+        <div>
+          <div class="eyebrow">One relay. One event log. One honest answer.</div>
+          <h1>Can Buzz be self-hosted today? Yes. But scope it correctly.</h1>
+          <p class="lead">
+            Buzz is self-hostable <strong>now</strong>. <strong>Best current path: one community on one VPS using <code>deploy/compose/</code>.</strong>
+            Helm is available for Kubernetes and managed infra, but adds operational complexity and is better treated as L2.
+          </p>
+          <div class="cta-row">
+            <a class="btn primary" href="#requirements">What you need</a>
+            <a class="btn secondary" href="#blockers">What is still rough</a>
+          </div>
+          <div class="meta-inline">
+            <span>Desktop = full UX today</span>
+            <span>Compose = fastest path</span>
+            <span>Helm = serious prod path</span>
+          </div>
+        </div>
+
+        <div class="hero-stack" aria-hidden="true">
+          <article class="data-card card-a">
+            <div class="mini-label">verdict</div>
+            <h3>Recommended MVP</h3>
+            <div class="hero-verdict-row">
+              <div class="stat-value">L1</div>
+              <div class="stat-note">Single VPS · single community · desktop-first · pinned image tag</div>
+            </div>
+            <div class="spark">
+              <span style="height: 34%"></span>
+              <span style="height: 42%"></span>
+              <span style="height: 54%"></span>
+              <span style="height: 60%"></span>
+              <span style="height: 78%"></span>
+              <span style="height: 72%"></span>
+              <span style="height: 92%"></span>
+            </div>
+          </article>
+
+          <article class="data-card card-b">
+            <div class="mini-label">runtime stack</div>
+            <h3>Required deps</h3>
+            <div class="req-chips">
+              <span>buzz-relay</span>
+              <span>postgres</span>
+              <span>redis</span>
+              <span>s3 / minio</span>
+              <span>git volume</span>
+              <span>domain + tls</span>
+              <span>stable secrets</span>
+            </div>
+          </article>
+
+          <article class="data-card card-c">
+            <div class="mini-label">risk posture</div>
+            <h3>Commercial rough edges</h3>
+            <div class="risk-row">
+              <div class="ring"></div>
+              <div class="stat-note">Strong core. Gaps remain in workflow approvals, rate limiting, and browser parity.</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+    </div>
+
+    <section class="band" id="layers">
+      <div class="page-inner">
+        <h2>L0 → L2: layer-by-layer path</h2>
+        <p class="section-intro">
+          Treat this as staged adoption, not one abstract “self-hosting” bucket. Each layer adds ops burden,
+          infra shape, and honesty requirements.
+        </p>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <div class="layer-title">L0</div>
+            <div class="layer-sub">evaluate in minutes</div>
+            <ul class="clean">
+              <li>Use Railway one-click path or local `just setup && just relay`.</li>
+              <li>Goal: prove product model — relay as workspace, signed events, shared human/agent surface.</li>
+              <li>Good for founder validation, not production proof.</li>
+              <li>Do not confuse root `docker-compose.yml` with production path — repo marks it dev-only.</li>
+            </ul>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">L1</div>
+            <div class="layer-sub">single VPS / core offering</div>
+            <ul class="clean">
+              <li>Use `deploy/compose/` bundle with Postgres, Redis, MinIO, git volume, optional Caddy TLS.</li>
+              <li>Best current commercial framing: one customer team, one community, one stack.</li>
+              <li>Desktop app is primary full UX; CLI/ACP are strong supporting surfaces.</li>
+              <li>Pin image tag. Keep secrets stable. Back up all stateful pieces.</li>
+            </ul>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">L2</div>
+            <div class="layer-sub">helm / managed infra / HA</div>
+            <ul class="clean">
+              <li>Use `deploy/charts/buzz/` with external Postgres, Redis, and S3.</li>
+              <li>Production Helm path expects `secrets.existingSecret` and GitOps discipline.</li>
+              <li>HA requires Redis; chart supports autoscaling and race-safe auto-migrations.</li>
+              <li>Use when team wants managed services, GitOps, or multi-replica posture.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="page">
+      <section>
+        <div class="verdict-grid">
+          <article class="verdict-card">
+            <h3>Verdict</h3>
+            <div class="verdict-big">Self-host Buzz now, but sell it as an early technical offering — not polished multi-tenant SaaS.</div>
+            <p class="section-intro" style="margin-bottom:0; max-width:none;">
+              Strongest present shape: <strong>single-community</strong>, <strong>single-node VPS</strong>,
+              <strong>desktop-first</strong>. Helm path exists for more serious ops. Multi-community semantics exist in architecture,
+              but should not be first commercial promise.
+            </p>
+            <div class="chip-row">
+              <div class="chip">Yes: Docker support</div>
+              <div class="chip">Yes: Compose VPS bundle</div>
+              <div class="chip">Yes: Helm chart</div>
+              <div class="chip">No: browser-parity workspace</div>
+              <div class="chip">No: polished enterprise posture yet</div>
+            </div>
+          </article>
+
+          <article class="verdict-box">
+            <div class="mini-label">product surface reality</div>
+            <h3 style="margin-top:0;">What users actually get today</h3>
+            <ul class="clean">
+              <li>Desktop app = full workspace UX.</li>
+              <li>`buzz-cli` = strong agent/operator surface.</li>
+              <li>ACP harness = usable for agent automation.</li>
+              <li>Web = repo browser + invite flows.</li>
+              <li>Mobile = active development, not parity.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="requirements">
+        <h2>What is required to self-host Buzz</h2>
+        <p class="section-intro">
+          Current Buzz is not “just run one binary.” Real runtime dependencies are explicit in repo docs and deploy manifests.
+        </p>
+
+        <div class="req-grid">
+          <article class="stack-card req-list">
+            <h3>Infra / services</h3>
+            <ul class="clean">
+              <li>Buzz relay image (`ghcr.io/block/buzz:&lt;tag&gt;`)</li>
+              <li>PostgreSQL</li>
+              <li>Redis</li>
+              <li>S3-compatible object store / bundled MinIO</li>
+              <li>Persistent git storage</li>
+              <li>Domain + TLS termination</li>
+            </ul>
+          </article>
+
+          <article class="stack-card req-list">
+            <h3>Secrets / identity</h3>
+            <ul class="clean">
+              <li>`BUZZ_RELAY_PRIVATE_KEY`</li>
+              <li>`RELAY_OWNER_PUBKEY`</li>
+              <li>`BUZZ_GIT_HOOK_HMAC_SECRET`</li>
+              <li>Postgres credentials</li>
+              <li>Redis password</li>
+              <li>S3 / MinIO credentials</li>
+            </ul>
+          </article>
+
+          <article class="stack-card req-list">
+            <h3>Operational actions</h3>
+            <ul class="clean">
+              <li>Pin immutable image tag (`sha-...` or semver), not `:main`</li>
+              <li>Run migrations (`BUZZ_AUTO_MIGRATE=true` or `buzz-admin migrate`)</li>
+              <li>Provision members/invites via `buzz-admin` + relay flows</li>
+              <li>Back up DB + object store + git data + secrets + owner key</li>
+            </ul>
+          </article>
+
+          <article class="stack-card">
+            <h3>Compose L1 shape</h3>
+            <div class="mono-box">deploy/compose/
+  compose.yml
+  compose.caddy.yml
+  .env.example
+  run.sh</div>
+            <p class="section-intro" style="font-size:14px; margin:16px 0 0; max-width:none;">
+              Single-node/VPS bundle. Optional Caddy TLS. Compose v2.24.4+ required.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="split">
+          <article class="stack-card">
+            <h3>Recommended path</h3>
+            <ul class="clean">
+              <li><strong>L0:</strong> eval locally / Railway to validate product fit.</li>
+              <li><strong>L1:</strong> launch first self-host offer on one VPS per team.</li>
+              <li><strong>L2:</strong> move to Helm only when managed services / HA / GitOps become hard requirement.</li>
+              <li>Be explicit that desktop is primary interface today.</li>
+            </ul>
+          </article>
+
+          <article class="stack-card">
+            <h3>Why L1 first</h3>
+            <ul class="clean">
+              <li>Fastest route to real customer deployment.</li>
+              <li>Least engineering beyond repo’s current supported path.</li>
+              <li>Keeps failure domains simple: one stack, one team, one domain.</li>
+              <li>Avoids overselling multi-community and browser parity too early.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="customization">
+        <h2>Agentic customization surfaces</h2>
+        <p class="section-intro">
+          If multi-agent services are core offering, strongest customization is not infra. It is the
+          <strong>agent layer</strong>: which agents exist, what they can do, how they are routed,
+          what tools they get, what memory they keep, and which workflows they automate.
+        </p>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <div class="layer-title">Roles</div>
+            <div class="layer-sub">what agents exist</div>
+            <ul class="clean">
+              <li>Persona packs define named agents / teams per client.</li>
+              <li>Each persona can carry its own system prompt, MCP config, and skill set.</li>
+              <li>Good fit for client-specific roles like research, triage, reviewer, release, docs, incident, support.</li>
+            </ul>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Routing</div>
+            <div class="layer-sub">when agents engage</div>
+            <ul class="clean">
+              <li><code>BUZZ_ACP_*</code> controls subscription mode, channel scope, mention handling, allowlists, and respond-to rules.</li>
+              <li>Agents can be scoped per channel, per workflow, or per event type.</li>
+              <li>Client offering can decide whether agents are reactive assistants, background workers, or both.</li>
+            </ul>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Capability</div>
+            <div class="layer-sub">what agents can do</div>
+            <ul class="clean">
+              <li>Tool surface comes from MCP sidecars, <code>buzz-cli</code>, and persona pack config.</li>
+              <li>Capabilities can include messaging, workflow control, repo operations, canvas, memory, and relay actions.</li>
+              <li>This is where client differentiation is highest without forking core product.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="split" style="margin-top:20px;">
+          <article class="stack-card">
+            <h3>Agent surfaces available for customization</h3>
+            <table class="matrix">
+              <thead>
+                <tr><th>Surface</th><th>What can vary per client</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="good">Persona layer</td>
+                  <td>Agent names, role definitions, prompts, MCP config, packaged skills, team composition</td>
+                </tr>
+                <tr>
+                  <td class="good">Model layer</td>
+                  <td>Provider, model, effort level, turn timeout, token caps, heartbeat, memory on/off</td>
+                </tr>
+                <tr>
+                  <td class="good">Routing layer</td>
+                  <td>Mentions vs all events, channel filters, allowlists, owner-only vs anyone, config rules</td>
+                </tr>
+                <tr>
+                  <td class="good">Workflow layer</td>
+                  <td>Trigger rules, webhook integrations, approval steps, YAML automations, escalation paths</td>
+                </tr>
+                <tr>
+                  <td class="muted">Tooling layer</td>
+                  <td>MCP sidecars, shell/file tools, repo policy commands, CLI surfaces exposed to agents</td>
+                </tr>
+                <tr>
+                  <td class="bad">Core feature layer</td>
+                  <td>New event kinds, new agent protocol behavior, new relay features — this becomes fork work</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article class="stack-card">
+            <h3>What is easy vs expensive</h3>
+            <ul class="clean">
+              <li><span class="good"><strong>Easy</strong></span> — custom personas, prompts, models, channel routing, allowlists, seed workflows, memory defaults.</li>
+              <li><span class="muted"><strong>Medium</strong></span> — client-specific tool bundles, MCP sidecars, tighter workflow orchestration, operator/admin runbooks around agent usage.</li>
+              <li><span class="bad"><strong>Hard</strong></span> — new native agent capabilities, new relay event kinds, deep admin/auth changes, product forks.</li>
+            </ul>
+            <p class="section-intro" style="font-size:14px; margin:16px 0 0; max-width:none;">
+              Rule: if customization stays in persona packs, ACP config, workflows, and MCP composition, it is still productized. Once it needs new kinds or relay behavior, it is a fork.
+            </p>
+          </article>
+        </div>
+
+        <div class="verdict-grid" style="margin-top:20px;">
+          <article class="verdict-card">
+            <h3>Recommended first-client agent offering</h3>
+            <div class="verdict-big">Sell custom agent teams, prompts, tool access, and workflows — not custom core features.</div>
+            <div class="chip-row">
+              <div class="chip">Research agent</div>
+              <div class="chip">Triage / support agent</div>
+              <div class="chip">Reviewer / release agent</div>
+              <div class="chip">Client persona pack</div>
+              <div class="chip">Workflow bundle</div>
+              <div class="chip">Scoped MCP tool access</div>
+            </div>
+          </article>
+
+          <article class="verdict-box">
+            <div class="mini-label">best current packaging</div>
+            <h3 style="margin-top:0;">What to standardize</h3>
+            <ul class="clean">
+              <li>Standard base agent runtime.</li>
+              <li>Per-client persona pack and prompt set.</li>
+              <li>Per-client routing and channel ownership rules.</li>
+              <li>Per-client workflow bundle.</li>
+              <li>Documented boundary between config customization and fork requests.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="enterprise-agent-features">
+        <h2>Enterprise agent features clients will kill for</h2>
+        <p class="section-intro">
+          Best wedge is packaged multi-agent systems tied to approvals, memory, role boundaries, and concrete business outcomes.
+        </p>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <div class="layer-title">Approval-gated autonomy</div>
+            <div class="layer-sub">act, but not blindly</div>
+            <p class="section-intro" style="font-size:15px; margin:0; max-width:none;">Example: <span class="agent-term">release agent</span> drafts rollout, human approves in-channel, agent ships with full audit trail.</p>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Scoped permissions</div>
+            <div class="layer-sub">least privilege by design</div>
+            <p class="section-intro" style="font-size:15px; margin:0; max-width:none;">Example: <span class="agent-term">support agent</span> can triage customer issues, but cannot touch prod workflows or protected repos.</p>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Persistent memory</div>
+            <div class="layer-sub">institutional recall</div>
+            <p class="section-intro" style="font-size:15px; margin:0; max-width:none;">Example: <span class="agent-term">incident agent</span> answers “have we seen this before?” with prior root causes, fixes, and owners.</p>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Incident swarm</div>
+            <div class="layer-sub">multi-agent response</div>
+            <p class="section-intro" style="font-size:15px; margin:0; max-width:none;">Example: <span class="agent-term">incident agent</span> gathers logs, <span class="agent-term">comms agent</span> drafts updates, <span class="agent-term">follow-up agent</span> tracks actions, <span class="agent-term">status agent</span> updates the thread.</p>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Release team</div>
+            <div class="layer-sub">change management</div>
+            <p class="section-intro" style="font-size:15px; margin:0; max-width:none;">Example: <span class="agent-term">reviewer agent</span> checks diffs, <span class="agent-term">notes agent</span> drafts changelog, <span class="agent-term">approval agent</span> gates production push.</p>
+          </article>
+
+          <article class="layer-card">
+            <div class="layer-title">Support triage team</div>
+            <div class="layer-sub">intake to escalation</div>
+            <p class="section-intro" style="font-size:15px; margin:0; max-width:none;">Example: <span class="agent-term">intake agent</span> classifies ticket, <span class="agent-term">dedupe agent</span> links history, <span class="agent-term">escalation agent</span> routes to right team.</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <section class="band" id="blockers">
+      <div class="page-inner">
+        <h2>Known blockers, gaps, operator burden</h2>
+        <p class="section-intro">
+          These are not hypothetical caveats. They are directly reflected in repo docs and should be presented with the same prominence as strengths.
+        </p>
+
+        <div class="warn-grid">
+          <article class="warn">
+            <h3>Product / platform gaps</h3>
+            <ul class="clean">
+              <li>Workflow approval gates not wired end-to-end.</li>
+              <li>`send_dm` and `set_channel_topic` workflow actions are stubbed.</li>
+              <li>Web is not full workspace client.</li>
+              <li>Mobile is still maturing.</li>
+            </ul>
+          </article>
+
+          <article class="warn">
+            <h3>Security / ops gaps</h3>
+            <ul class="clean">
+              <li>No real rate limiting implementation yet.</li>
+              <li>Compose defaults to mutable `:main` image tag.</li>
+              <li>No clear LTS support model; security support centers on active `main`.</li>
+              <li>Backup/restore story exists as checklist, not polished runbook.</li>
+            </ul>
+          </article>
+
+          <article class="warn">
+            <h3>Scope boundaries</h3>
+            <ul class="clean">
+              <li>Do not frame current offer as compliance-grade or enterprise-ready.</li>
+              <li>Do not promise multi-tenant productization from day one.</li>
+              <li>Do not promise minimal-mode single-binary deployment — Redis + S3 are real deps today.</li>
+            </ul>
+          </article>
+
+          <article class="warn">
+            <h3>Sovereignty tradeoffs</h3>
+            <ul class="clean">
+              <li>Operator owns infra, TLS, backups, upgrades.</li>
+              <li>Key loss is identity loss — no recovery softness.</li>
+              <li>Onboarding friction exists because Nostr keys are real, not hidden behind OAuth magic.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="page">
+      <section id="matrix">
+        <div class="matrix-wrap">
+          <h3>Decision matrix</h3>
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Axis</th>
+                <th>L0 / evaluate</th>
+                <th>L1 / Compose VPS</th>
+                <th>L2 / Helm + managed infra</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primary goal</td>
+                <td>Prove concept</td>
+                <td>Launch first real self-host offer</td>
+                <td>Harden for ops scale</td>
+              </tr>
+              <tr>
+                <td>Ops burden</td>
+                <td class="muted">low / disposable</td>
+                <td class="good">moderate but understandable</td>
+                <td class="bad">highest</td>
+              </tr>
+              <tr>
+                <td>Infra shape</td>
+                <td>local or hosted eval</td>
+                <td>bundled Postgres + Redis + MinIO + git volume</td>
+                <td>external Postgres + Redis + S3 + K8s</td>
+              </tr>
+              <tr>
+                <td>HA</td>
+                <td>none</td>
+                <td>none</td>
+                <td>yes, multi-replica path</td>
+              </tr>
+              <tr>
+                <td>Who fits</td>
+                <td>founders exploring</td>
+                <td>small technical team, desktop-first</td>
+                <td>GitOps / platform-heavy org</td>
+              </tr>
+              <tr>
+                <td>Main caution</td>
+                <td>not production proof</td>
+                <td>must pin version + own backups</td>
+                <td>more moving parts than most early users need</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <div class="split">
+          <article class="stack-card">
+            <h3>Founder takeaway</h3>
+            <p class="section-intro" style="margin-bottom: 0; max-width:none;">
+              If question is “can we offer Buzz self-hosted now?”, answer is <strong>yes</strong>.
+              If question is “what version of that offer is honest today?”, answer is <strong>L1 Compose on a VPS for a technical team</strong>.
+            </p>
+          </article>
+
+          <article class="stack-card">
+            <h3>What not to overclaim</h3>
+            <p class="section-intro" style="margin-bottom: 0; max-width:none;">
+              Do not pitch current repo as browser-first collaboration suite, polished multi-tenant hosted platform,
+              or compliance-grade enterprise control plane. Pitch it as sovereign, technical, real, and early.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        <div>Sources: README · ARCHITECTURE · VISION / VISION_SOVEREIGN · deploy/compose · deploy/charts/buzz · experiment 001 self-hosting plan</div>
+        <div>One domain. One identity. Everything in one place — and it’s yours.</div>
+      </footer>
+    </div>
+  </body>
+</html>
