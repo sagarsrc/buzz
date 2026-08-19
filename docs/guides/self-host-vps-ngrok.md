@@ -457,6 +457,14 @@ Share the printed `https://<host>.ngrok-free.app/invite/<code>` link with peers.
    ./run.sh add-member <desktop-pubkey-hex> --role member
    ```
    Then restart/refresh the desktop app.
+6. If you can connect to the community but cannot join a specific channel, add the desktop pubkey to that channel as well:
+   ```bash
+   buzz channels add-member \
+     --channel <channel-id> \
+     --pubkey <desktop-pubkey-hex> \
+     --role admin
+   ```
+   Then refresh the channel list in the desktop app.
 
 ## Where is my ACP agent in the desktop app?
 
