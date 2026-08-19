@@ -1,0 +1,10 @@
+{
+  "id": "com.example.hacker-news",
+  "name": "HackerNews Curator",
+  "version": "0.1.0",
+  "description": "Agent that fetches and summarizes top HackerNews stories.",
+  "keywords": ["hackernews", "news", "buzz"],
+  "personas": [
+    "agents/hn-curator.persona.md"
+  ]
+}

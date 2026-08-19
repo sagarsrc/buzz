@@ -19,6 +19,7 @@ mod str_replace;
 mod todo;
 mod tree;
 mod view_image;
+mod web_fetch;
 
 #[derive(Clone)]
 struct DevMcp {
@@ -69,6 +70,17 @@ impl DevMcp {
         Parameters(p): Parameters<view_image::ViewImageParams>,
     ) -> Result<CallToolResult, ErrorData> {
         view_image::run(&self.state, p).await
+    }
+
+    #[tool(
+        name = "web_fetch",
+        description = "Fetch an HTTP/HTTPS URL and return the response body as text. Use this to read public APIs such as HackerNews."
+    )]
+    async fn web_fetch(
+        &self,
+        Parameters(p): Parameters<web_fetch::WebFetchParams>,
+    ) -> Result<CallToolResult, ErrorData> {
+        web_fetch::run(&self.state, p).await
     }
 
     #[tool(
